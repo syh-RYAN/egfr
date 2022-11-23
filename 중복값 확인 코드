@@ -1,0 +1,5 @@
+--중복값 x
+select d.subno , d.lab_date , count(*)
+from syh.db3 d 
+group by d.subno , d.lab_date
+having count(*) >1;
