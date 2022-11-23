@@ -1,3 +1,4 @@
+with z as(
 select om.patno 
 	,	om.ordcode 
 	,	om.orddate
@@ -25,5 +26,8 @@ and case
 		when  om.orddate::int > oa.birthday::int then floor((om.orddate::int - oa.birthday::int) / 10000)
 		when char_length(om.orddate) = 4 then floor((concat(om.orddate, '0101')::int - oa.birthday::int) / 10000)
 		when char_length(om.orddate) = 6 then floor((concat(om.orddate, '01')::int - oa.birthday::int) / 10000)
-	end between '20' and '64' and meddept ='IMKD')
-	
+	end between '20' and '64' and meddept ='IMKD') -- 약 처방받은 환자들에 대해서 나이는 20~64세 사이여야하며 처방 날짜는 20201101 ~ 20221031 이며 신장내과 한번이라도 처방이 있어야함
+select distinct patno
+from z
+;
+-- 환자 번호만 가지고 오기 위한 작업
