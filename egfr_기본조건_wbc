@@ -1,0 +1,36 @@
+select *
+	from (
+			select 
+					patno 
+				,	to_char(acptdt,'YYYYMMDDHH24') as acptdtt 
+				,	orddr	
+				,	age
+				,	max(case when a.examcode  = 'L200201' then a.rslttext else null end) WBC
+				,	max(case when a.examcode  = 'L200203' then a.rslttext else null end) Hb
+				,	max(case when a.examcode  = 'L200209' then a.rslttext else null end) Plt
+				,	max(case when a.examcode  = 'L3024' then a.rslttext else null end) BUN
+				,	max(case when a.examcode  = 'L3025C' then a.rslttext else null end) Cr
+				,	max(case when a.examcode  = 'L3015' then a.rslttext else null end) AST
+				,	max(case when a.examcode  = 'L3016' then a.rslttext else null end) ALT
+				,	max(case when a.examcode  = 'L3029' then a.rslttext else null end) TC
+				,	max(case when a.examcode  = 'L3030'  then a.rslttext else null end) TG
+				,	max(case when a.examcode  = 'L30311' then a.rslttext else null end) LDL
+				,	max(case when a.examcode  = 'L3031' then a.rslttext else null end) HDL			
+				from (
+						select	
+							el.patno
+						,	case 
+								when  to_char(acptdt,'YYYYMMDD')::int > el.birthday::int then floor((to_char(acptdt,'YYYYMMDD')::int - el.birthday::int) / 10000)
+							end age	
+						,	pm.examcode 
+						,	pm.rslttext 
+						,	pm.acptdt 
+						,	pm.orddr
+								from syh.egfr_lee_birthday el 
+								inner join cdmpv531.pre_measurement pm 
+								on el.patno = pm.patno
+								where to_char(acptdt,'YYYYMMDD') between '20201101' and '20221031' and (pm.rslttext ~ '^[0-9]{1,}.[0-9]*$' or pm.rslttext ~ '^[0-9]*$')
+								) a
+									group by patno,to_char(acptdt,'YYYYMMDDHH24'),orddr,age
+									) a
+	where not(wbc,hb,plt,bun,cr,ast,alt,tc,tg,ldl,hdl) is null
