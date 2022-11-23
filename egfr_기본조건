@@ -1,0 +1,29 @@
+select om.patno 
+	,	om.ordcode 
+	,	om.orddate
+	, 	oa.birthday
+	,	om.meddept 
+	,	case 
+			when  om.orddate::int > oa.birthday::int then floor((om.orddate::int - oa.birthday::int) / 10000)
+			when char_length(om.orddate) = 4 then floor((concat(om.orddate, '0101')::int - oa.birthday::int) / 10000)
+			when char_length(om.orddate) = 6 then floor((concat(om.orddate, '01')::int - oa.birthday::int) / 10000)
+		end as idgn_age
+from cdmpv531.cdm_order om 
+inner join public.ods_appatbat oa 
+on om.patno = oa.patno
+where 
+	ordcode in('DAMO510010','DAMO55010','DATOZE1010','DATOZE1020','DATOZE1040','DATOZE1080','DBEART1010','DBEART1020','DROSUVA10','DROSUVA20',
+		'DROSUVA5','DLIPESTIN','DATOME1050','DATOME2050','DCADU520','DCADUET','DCOMB1016','DDUKAR30','DDUKAR60','DDUOW4010','DDUOW4020','DDUOW405',
+		'DDUOW8010','DEXR516010','DEXR58010','DLIVAV2160','DLIVAV280','DLIVAV4160','DLIVAV480','DNEBIR125','DNEBIR210','DNEBIR25','DNEBIR510','DNEBIR520',
+		'DOLOM20510','DROSUAM105','DROSUAM205','DROSUAM55','DROVA10160','DROVA1080','DROVELI1','DROVELI2','DTELO40510','DTELO4055','DTELO80510','DTELO8055',
+		'DTUVE3010','DTUVE6010','DATMEG','DCREST20','DCREST5','DCRESTOR','DLIPITO10','DLIPITO20','DLIPITO40','DLIPITO80','DLIVALO','DLIVALO1','DLIVALO4',
+		'DMEVALO10','DMEVALO20','DMEVALO40','DROJECOR','DSIMVAS20','DSIMVAS40','DXILEPXL','DAMO510010','DAMO55010','DATOZE1010','DATOZE1020','DATOZE1040',
+		'DATOZE1080','DBEART1010','DBEART1020','DROSUVA10','DROSUVA20','DROSUVA5','DEZETROL','DLIPESTIN','DLIPIDIL','DQUEST-PG','DOMACO','WPRALU150',
+		'WPRALU75','WREPATHA')
+and orddate between '20201101' and '20221031' 
+and case 
+		when  om.orddate::int > oa.birthday::int then floor((om.orddate::int - oa.birthday::int) / 10000)
+		when char_length(om.orddate) = 4 then floor((concat(om.orddate, '0101')::int - oa.birthday::int) / 10000)
+		when char_length(om.orddate) = 6 then floor((concat(om.orddate, '01')::int - oa.birthday::int) / 10000)
+	end between '20' and '64' and meddept ='IMKD')
+	
