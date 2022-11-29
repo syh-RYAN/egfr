@@ -1,0 +1,370 @@
+with z as(
+select 
+	ep.patno,
+	left(ds.acpttime,8) as acpttime,
+	max (case when ds.examcode  = 'L200201' then ds.rsltnum else null end) as wbc,
+	max(case when ds.examcode  = 'L200318' then ds.rsltnum else null end) as neut,
+	max(case when ds.examcode  = 'L200209' then ds.rsltnum else null end) as plt,
+	max(case when ds.examcode  = 'L200203' then ds.rsltnum else null end) as hg,
+	max(case when ds.examcode  = 'L200204' then ds.rsltnum else null end) as hct,
+	max(case when ds.examcode  = 'L200205' then ds.rsltnum else null end) as mcv,
+	max(case when ds.examcode  = 'L3039' then ds.rsltnum else null end) as iron,
+	max(case when ds.examcode  = 'L30401' then ds.rsltnum else null end) as tibc,
+	max(case when ds.examcode  = 'L304005' then ds.rsltnum else null end) as tfs,
+	max(case when ds.examcode  = 'L3024' then ds.rsltnum else null end) as bun,
+	max(case when ds.examcode  = 'L3025C' then ds.rsltnum else null end)as cr,
+	max(case when ds.examcode  = 'L3015' then ds.rsltnum else null end) as ast,
+	max(case when ds.examcode  = 'L3016' then ds.rsltnum else null end) as alt,
+	max(case when ds.examcode  = 'L3018' then ds.rsltnum else null end) as tbil,
+	max(case when ds.examcode  = 'L3014' then ds.rsltnum else null end) as gtp,
+	max(case when ds.examcode  = 'L321807' then ds.rsltnum else null end) as alp,
+	max(case when ds.examcode  = 'L100312' then ds.rsltnum else null end) as ua,
+	max(case when ds.examcode  = 'L3029' then ds.rsltnum else null end) as tchol,
+	max(case when ds.examcode  = 'L3030' then ds.rsltnum else null end) as tg,
+	max(case when ds.examcode  = 'L30311' then ds.rsltnum else null end) as ldl,
+	max(case when ds.examcode  = 'L3031' then ds.rsltnum else null end) as hdl,
+	max(case when ds.examcode  = 'L3033' then ds.rsltnum else null end) as fbs,
+	max(case when ds.examcode  = 'L3034' then ds.rsltnum else null end) as hba1c,
+	max(case when ds.examcode  = 'L3010' then ds.rsltnum else null end) as na,
+	max(case when ds.examcode  = 'L3011' then ds.rsltnum else null end) as k,
+	max(case when ds.examcode  = 'L3012' then ds.rsltnum else null end) as cl,
+	max(case when ds.examcode  = 'L3027' then ds.rsltnum else null end) as tca,
+	max(case when ds.examcode  = 'L3028' then ds.rsltnum else null end) as p,
+	max(case when ds.examcode  = 'L3052' then ds.rsltnum else null end) as crp,
+	max(case when ds.examcode  = 'L53062' then ds.rsltnum else null end) as pth,
+	max(case when ds.examcode  = 'L920106' then ds.rsltnum else null end) as hco3
+from syh.egfr_pt ep 
+inner join public.dw_stexmrst_1998_2013 ds 
+on ep.patno = ds.patno
+where left(ds.acpttime,8) between '20190101' and '20210630'
+group by ep.patno,left(ds.acpttime,10) order by ep.patno)
+, y as(
+select 
+*
+from z 
+where not (wbc,neut,plt,hg,hct,mcv,iron,tibc,tfs,bun,cr,ast,alt,tbil,gtp,alp,ua,tchol,tg,ldl,hdl,fbs,hba1c,na,k,cl,tca,p,crp,pth,hco3) is null)
+select patno
+	,min(case rn when 1 then i end) date_0
+	,min(case rn when 1 then wbc end) wbc_0
+	,min(case rn when 1 then neut end) neut_0
+	,min(case rn when 1 then plt end) plt_0
+	,min(case rn when 1 then hg end) hg_0
+	,min(case rn when 1 then hct end) hct_0
+	,min(case rn when 1 then mcv end) mcv_0
+	,min(case rn when 1 then iron end) iron_0
+	,min(case rn when 1 then tibc end) tibc_0
+	,min(case rn when 1 then tfs end) tfs_0
+	,min(case rn when 1 then bun end) bun_0
+	,min(case rn when 1 then cr end) cr_0
+	,min(case rn when 1 then ast end) ast_0
+	,min(case rn when 1 then alt end) alt_0
+	,min(case rn when 1 then tbil end) tbil_0
+	,min(case rn when 1 then gtp end) gtp_0
+	,min(case rn when 1 then alp end) alp_0
+	,min(case rn when 1 then ua end) ua_0
+	,min(case rn when 1 then tchol end) tchol_0
+	,min(case rn when 1 then tg end) tg_0
+	,min(case rn when 1 then ldl end) ldl_0
+	,min(case rn when 1 then hdl end) hdl_0
+	,min(case rn when 1 then fbs end) fbs_0
+	,min(case rn when 1 then hba1c end) hba1c_0
+	,min(case rn when 1 then na end) na_0
+	,min(case rn when 1 then k end) k_0
+	,min(case rn when 1 then cl end) cl_0
+	,min(case rn when 1 then tca end) tca_0
+	,min(case rn when 1 then p end) p_0
+	,min(case rn when 1 then crp end) crp_0
+	,min(case rn when 1 then pth end) pth_0
+	,min(case rn when 1 then hco3 end) hco3_0
+	,min(case rn when 2 then i end) date_1
+	,min(case rn when 2 then wbc end) wbc_1
+	,min(case rn when 2 then neut end) neut_1
+	,min(case rn when 2 then plt end) plt_1
+	,min(case rn when 2 then hg end) hg_1
+	,min(case rn when 2 then hct end) hct_1
+	,min(case rn when 2 then mcv end) mcv_1
+	,min(case rn when 2 then iron end) iron_1
+	,min(case rn when 2 then tibc end) tibc_1
+	,min(case rn when 2 then tfs end) tfs_1
+	,min(case rn when 2 then bun end) bun_1
+	,min(case rn when 2 then cr end) cr_1
+	,min(case rn when 2 then ast end) ast_1
+	,min(case rn when 2 then alt end) alt_1
+	,min(case rn when 2 then tbil end) tbil_1
+	,min(case rn when 2 then gtp end) gtp_1
+	,min(case rn when 2 then alp end) alp_1
+	,min(case rn when 2 then ua end) ua_1
+	,min(case rn when 2 then tchol end) tchol_1
+	,min(case rn when 2 then tg end) tg_1
+	,min(case rn when 2 then ldl end) ldl_1
+	,min(case rn when 2 then hdl end) hdl_1
+	,min(case rn when 2 then fbs end) fbs_1
+	,min(case rn when 2 then hba1c end) hba1c_1
+	,min(case rn when 2 then na end) na_1
+	,min(case rn when 2 then k end) k_1
+	,min(case rn when 2 then cl end) cl_1
+	,min(case rn when 2 then tca end) tca_1
+	,min(case rn when 2 then p end) p_1
+	,min(case rn when 2 then crp end) crp_1
+	,min(case rn when 2 then pth end) pth_1
+	,min(case rn when 2 then hco3 end) hco3_1
+	,min(case rn when 3 then i end) date_2
+	,min(case rn when 3 then wbc end) wbc_2
+	,min(case rn when 3 then neut end) neut_2
+	,min(case rn when 3 then plt end) plt_2
+	,min(case rn when 3 then hg end) hg_2
+	,min(case rn when 3 then hct end) hct_2
+	,min(case rn when 3 then mcv end) mcv_2
+	,min(case rn when 3 then iron end) iron_2
+	,min(case rn when 3 then tibc end) tibc_2
+	,min(case rn when 3 then tfs end) tfs_2
+	,min(case rn when 3 then bun end) bun_2
+	,min(case rn when 3 then cr end) cr_2
+	,min(case rn when 3 then ast end) ast_2
+	,min(case rn when 3 then alt end) alt_2
+	,min(case rn when 3 then tbil end) tbil_2
+	,min(case rn when 3 then gtp end) gtp_2
+	,min(case rn when 3 then alp end) alp_2
+	,min(case rn when 3 then ua end) ua_2
+	,min(case rn when 3 then tchol end) tchol_2
+	,min(case rn when 3 then tg end) tg_2
+	,min(case rn when 3 then ldl end) ldl_2
+	,min(case rn when 3 then hdl end) hdl_2
+	,min(case rn when 3 then fbs end) fbs_2
+	,min(case rn when 3 then hba1c end) hba1c_2
+	,min(case rn when 3 then na end) na_2
+	,min(case rn when 3 then k end) k_2
+	,min(case rn when 3 then cl end) cl_2
+	,min(case rn when 3 then tca end) tca_2
+	,min(case rn when 3 then p end) p_2
+	,min(case rn when 3 then crp end) crp_2
+	,min(case rn when 3 then pth end) pth_2
+	,min(case rn when 3 then hco3 end) hco3_2
+	,min(case rn when 4 then i end) date_3
+	,min(case rn when 4 then wbc end) wbc_3
+	,min(case rn when 4 then neut end) neut_3
+	,min(case rn when 4 then plt end) plt_3
+	,min(case rn when 4 then hg end) hg_3
+	,min(case rn when 4 then hct end) hct_3
+	,min(case rn when 4 then mcv end) mcv_3
+	,min(case rn when 4 then iron end) iron_3
+	,min(case rn when 4 then tibc end) tibc_3
+	,min(case rn when 4 then tfs end) tfs_3
+	,min(case rn when 4 then bun end) bun_3
+	,min(case rn when 4 then cr end) cr_3
+	,min(case rn when 4 then ast end) ast_3
+	,min(case rn when 4 then alt end) alt_3
+	,min(case rn when 4 then tbil end) tbil_3
+	,min(case rn when 4 then gtp end) gtp_3
+	,min(case rn when 4 then alp end) alp_3
+	,min(case rn when 4 then ua end) ua_3
+	,min(case rn when 4 then tchol end) tchol_3
+	,min(case rn when 4 then tg end) tg_3
+	,min(case rn when 4 then ldl end) ldl_3
+	,min(case rn when 4 then hdl end) hdl_3
+	,min(case rn when 4 then fbs end) fbs_3
+	,min(case rn when 4 then hba1c end) hba1c_3
+	,min(case rn when 4 then na end) na_3
+	,min(case rn when 4 then k end) k_3
+	,min(case rn when 4 then cl end) cl_3
+	,min(case rn when 4 then tca end) tca_3
+	,min(case rn when 4 then p end) p_3
+	,min(case rn when 4 then crp end) crp_3
+	,min(case rn when 4 then pth end) pth_3
+	,min(case rn when 4 then hco3 end) hco3_3
+	,min(case rn when 5 then i end) date_4
+	,min(case rn when 5 then wbc end) wbc_4
+	,min(case rn when 5 then neut end) neut_4
+	,min(case rn when 5 then plt end) plt_4
+	,min(case rn when 5 then hg end) hg_4
+	,min(case rn when 5 then hct end) hct_4
+	,min(case rn when 5 then mcv end) mcv_4
+	,min(case rn when 5 then iron end) iron_4
+	,min(case rn when 5 then tibc end) tibc_4
+	,min(case rn when 5 then tfs end) tfs_4
+	,min(case rn when 5 then bun end) bun_4
+	,min(case rn when 5 then cr end) cr_4
+	,min(case rn when 5 then ast end) ast_4
+	,min(case rn when 5 then alt end) alt_4
+	,min(case rn when 5 then tbil end) tbil_4
+	,min(case rn when 5 then gtp end) gtp_4
+	,min(case rn when 5 then alp end) alp_4
+	,min(case rn when 5 then ua end) ua_4
+	,min(case rn when 5 then tchol end) tchol_4
+	,min(case rn when 5 then tg end) tg_4
+	,min(case rn when 5 then ldl end) ldl_4
+	,min(case rn when 5 then hdl end) hdl_4
+	,min(case rn when 5 then fbs end) fbs_4
+	,min(case rn when 5 then hba1c end) hba1c_4
+	,min(case rn when 5 then na end) na_4
+	,min(case rn when 5 then k end) k_4
+	,min(case rn when 5 then cl end) cl_4
+	,min(case rn when 5 then tca end) tca_4
+	,min(case rn when 5 then p end) p_4
+	,min(case rn when 5 then crp end) crp_4
+	,min(case rn when 5 then pth end) pth_4
+	,min(case rn when 5 then hco3 end) hco3_4
+	,min(case rn when 6 then i end) date_5
+	,min(case rn when 6 then wbc end) wbc_5
+	,min(case rn when 6 then neut end) neut_5
+	,min(case rn when 6 then plt end) plt_5
+	,min(case rn when 6 then hg end) hg_5
+	,min(case rn when 6 then hct end) hct_5
+	,min(case rn when 6 then mcv end) mcv_5
+	,min(case rn when 6 then iron end) iron_5
+	,min(case rn when 6 then tibc end) tibc_5
+	,min(case rn when 6 then tfs end) tfs_5
+	,min(case rn when 6 then bun end) bun_5
+	,min(case rn when 6 then cr end) cr_5
+	,min(case rn when 6 then ast end) ast_5
+	,min(case rn when 6 then alt end) alt_5
+	,min(case rn when 6 then tbil end) tbil_5
+	,min(case rn when 6 then gtp end) gtp_5
+	,min(case rn when 6 then alp end) alp_5
+	,min(case rn when 6 then ua end) ua_5
+	,min(case rn when 6 then tchol end) tchol_5
+	,min(case rn when 6 then tg end) tg_5
+	,min(case rn when 6 then ldl end) ldl_5
+	,min(case rn when 6 then hdl end) hdl_5
+	,min(case rn when 6 then fbs end) fbs_5
+	,min(case rn when 6 then hba1c end) hba1c_5
+	,min(case rn when 6 then na end) na_5
+	,min(case rn when 6 then k end) k_5
+	,min(case rn when 6 then cl end) cl_5
+	,min(case rn when 6 then tca end) tca_5
+	,min(case rn when 6 then p end) p_5
+	,min(case rn when 6 then crp end) crp_5
+	,min(case rn when 6 then pth end) pth_5
+	,min(case rn when 6 then hco3 end) hco3_5
+	,min(case rn when 7 then i end) date_6
+	,min(case rn when 7 then wbc end) wbc_6
+	,min(case rn when 7 then neut end) neut_6
+	,min(case rn when 7 then plt end) plt_6
+	,min(case rn when 7 then hg end) hg_6
+	,min(case rn when 7 then hct end) hct_6
+	,min(case rn when 7 then mcv end) mcv_6
+	,min(case rn when 7 then iron end) iron_6
+	,min(case rn when 7 then tibc end) tibc_6
+	,min(case rn when 7 then tfs end) tfs_6
+	,min(case rn when 7 then bun end) bun_6
+	,min(case rn when 7 then cr end) cr_6
+	,min(case rn when 7 then ast end) ast_6
+	,min(case rn when 7 then alt end) alt_6
+	,min(case rn when 7 then tbil end) tbil_6
+	,min(case rn when 7 then gtp end) gtp_6
+	,min(case rn when 7 then alp end) alp_6
+	,min(case rn when 7 then ua end) ua_6
+	,min(case rn when 7 then tchol end) tchol_6
+	,min(case rn when 7 then tg end) tg_6
+	,min(case rn when 7 then ldl end) ldl_6
+	,min(case rn when 7 then hdl end) hdl_6
+	,min(case rn when 7 then fbs end) fbs_6
+	,min(case rn when 7 then hba1c end) hba1c_6
+	,min(case rn when 7 then na end) na_6
+	,min(case rn when 7 then k end) k_6
+	,min(case rn when 7 then cl end) cl_6
+	,min(case rn when 7 then tca end) tca_6
+	,min(case rn when 7 then p end) p_6
+	,min(case rn when 7 then crp end) crp_6
+	,min(case rn when 7 then pth end) pth_6
+	,min(case rn when 7 then hco3 end) hco3_6
+	,min(case rn when 8 then i end) date_7
+	,min(case rn when 8 then wbc end) wbc_7
+	,min(case rn when 8 then neut end) neut_7
+	,min(case rn when 8 then plt end) plt_7
+	,min(case rn when 8 then hg end) hg_7
+	,min(case rn when 8 then hct end) hct_7
+	,min(case rn when 8 then mcv end) mcv_7
+	,min(case rn when 8 then iron end) iron_7
+	,min(case rn when 8 then tibc end) tibc_7
+	,min(case rn when 8 then tfs end) tfs_7
+	,min(case rn when 8 then bun end) bun_7
+	,min(case rn when 8 then cr end) cr_7
+	,min(case rn when 8 then ast end) ast_7
+	,min(case rn when 8 then alt end) alt_7
+	,min(case rn when 8 then tbil end) tbil_7
+	,min(case rn when 8 then gtp end) gtp_7
+	,min(case rn when 8 then alp end) alp_7
+	,min(case rn when 8 then ua end) ua_7
+	,min(case rn when 8 then tchol end) tchol_7
+	,min(case rn when 8 then tg end) tg_7
+	,min(case rn when 8 then ldl end) ldl_7
+	,min(case rn when 8 then hdl end) hdl_7
+	,min(case rn when 8 then fbs end) fbs_7
+	,min(case rn when 8 then hba1c end) hba1c_7
+	,min(case rn when 8 then na end) na_7
+	,min(case rn when 8 then k end) k_7
+	,min(case rn when 8 then cl end) cl_7
+	,min(case rn when 8 then tca end) tca_7
+	,min(case rn when 8 then p end) p_7
+	,min(case rn when 8 then crp end) crp_7
+	,min(case rn when 8 then pth end) pth_7
+	,min(case rn when 8 then hco3 end) hco3_7
+	,min(case rn when 9 then i end) date_8
+	,min(case rn when 9 then wbc end) wbc_8
+	,min(case rn when 9 then neut end) neut_8
+	,min(case rn when 9 then plt end) plt_8
+	,min(case rn when 9 then hg end) hg_8
+	,min(case rn when 9 then hct end) hct_8
+	,min(case rn when 9 then mcv end) mcv_8
+	,min(case rn when 9 then iron end) iron_8
+	,min(case rn when 9 then tibc end) tibc_8
+	,min(case rn when 9 then tfs end) tfs_8
+	,min(case rn when 9 then bun end) bun_8
+	,min(case rn when 9 then cr end) cr_8
+	,min(case rn when 9 then ast end) ast_8
+	,min(case rn when 9 then alt end) alt_8
+	,min(case rn when 9 then tbil end) tbil_8
+	,min(case rn when 9 then gtp end) gtp_8
+	,min(case rn when 9 then alp end) alp_8
+	,min(case rn when 9 then ua end) ua_8
+	,min(case rn when 9 then tchol end) tchol_8
+	,min(case rn when 9 then tg end) tg_8
+	,min(case rn when 9 then ldl end) ldl_8
+	,min(case rn when 9 then hdl end) hdl_8
+	,min(case rn when 9 then fbs end) fbs_8
+	,min(case rn when 9 then hba1c end) hba1c_8
+	,min(case rn when 9 then na end) na_8
+	,min(case rn when 9 then k end) k_8
+	,min(case rn when 9 then cl end) cl_8
+	,min(case rn when 9 then tca end) tca_8
+	,min(case rn when 9 then p end) p_8
+	,min(case rn when 9 then crp end) crp_8
+	,min(case rn when 9 then pth end) pth_8
+	,min(case rn when 9 then hco3 end) hco3_8
+	,min(case rn when 10 then i end) date_9
+	,min(case rn when 10 then wbc end) wbc_9
+	,min(case rn when 10 then neut end) neut_9
+	,min(case rn when 10 then plt end) plt_9
+	,min(case rn when 10 then hg end) hg_9
+	,min(case rn when 10 then hct end) hct_9
+	,min(case rn when 10 then mcv end) mcv_9
+	,min(case rn when 10 then iron end) iron_9
+	,min(case rn when 10 then tibc end) tibc_9
+	,min(case rn when 10 then tfs end) tfs_9
+	,min(case rn when 10 then bun end) bun_9
+	,min(case rn when 10 then cr end) cr_9
+	,min(case rn when 10 then ast end) ast_9
+	,min(case rn when 10 then alt end) alt_9
+	,min(case rn when 10 then tbil end) tbil_9
+	,min(case rn when 10 then gtp end) gtp_9
+	,min(case rn when 10 then alp end) alp_9
+	,min(case rn when 10 then ua end) ua_9
+	,min(case rn when 10 then tchol end) tchol_9
+	,min(case rn when 10 then tg end) tg_9
+	,min(case rn when 10 then ldl end) ldl_9
+	,min(case rn when 10 then hdl end) hdl_9
+	,min(case rn when 10 then fbs end) fbs_9
+	,min(case rn when 10 then hba1c end) hba1c_9
+	,min(case rn when 10 then na end) na_9
+	,min(case rn when 10 then k end) k_9
+	,min(case rn when 10 then cl end) cl_9
+	,min(case rn when 10 then tca end) tca_9
+	,min(case rn when 10 then p end) p_9
+	,min(case rn when 10 then crp end) crp_9
+	,min(case rn when 10 then pth end) pth_9
+	,min(case rn when 10 then hco3 end) hco3_9
+from (select patno,left(acpttime,8)as i,wbc,neut,plt,hg,hct,mcv,iron,tibc,tfs,bun,cr,ast,alt,tbil,gtp,alp,ua,tchol,tg,ldl,hdl,fbs,hba1c,na,k,cl,tca,p,crp,pth,hco3
+		,row_number () over(partition by patno order by patno) rn from y)a
+group by patno
+;
